@@ -5,13 +5,7 @@ from matplotlib.patches import Polygon
 import matplotlib.cm
 import itertools
 # import bidi.algorithm  # for RTL languages
-
-
-def plot(input_data, *args, **kwargs):
-    at = AlluvialTool(input_data, *args, **kwargs)
-    ax = at.plot(**kwargs)
-    ax.axis('off')
-    return ax
+from .item_coord_record import ItemCoordRecord
 
 
 class AlluvialTool:
@@ -20,7 +14,8 @@ class AlluvialTool:
         self.input = input_data
         self.x_range = x_range
         self.res = res  # defines the resolution of the splines for all veins
-        self.combs = sorted(itertools.product((0, 1), (1, 0)), key=lambda xy: all(xy))
+        self.combs = sorted(itertools.product(
+            (0, 1), (1, 0)), key=lambda xy: all(xy))
         self.trace_xy = self.make_vein_blueprint_xy_arrays()
         self.data_dic = self.read_input()
         self.item_widths_dic = self.get_item_widths_dic()
@@ -29,7 +24,8 @@ class AlluvialTool:
         self.h_gap = x_range[1] * h_gap_frac
         self.v_gap_frac = v_gap_frac
         self.v_gap = sum(
-            [width for b_item_counter in self.data_dic.values() for width in b_item_counter.values()]
+            [width for b_item_counter in self.data_dic.values()
+             for width in b_item_counter.values()]
         ) * v_gap_frac
         self.group_widths = self.get_group_widths()
         self.item_coord_dic = self.make_item_coordinate_dic()
@@ -76,7 +72,7 @@ class AlluvialTool:
         return {
             dict: self.read_input_from_dict(),
             list: self.read_input_from_list()
-         }[type(self.input)]
+        }[type(self.input)]
 
     def get_item_widths_dic(self):
         iwd = Counter()
@@ -92,7 +88,8 @@ class AlluvialTool:
             {a_item for a_item in self.data_dic}, key=lambda x: self.item_widths_dic[x]
         ) if not a_sort else a_sort
         b_members = sorted(
-            {b_item for b_item_counter in self.data_dic.values() for b_item in b_item_counter},
+            {b_item for b_item_counter in self.data_dic.values()
+             for b_item in b_item_counter},
             key=lambda x: self.item_widths_dic[x]
         ) if not b_sort else b_sort
         return a_members, b_members
@@ -118,8 +115,10 @@ class AlluvialTool:
 
     def generate_alluvial_vein(self, a_item, b_item):
         width = self.data_dic[a_item][b_item]
-        a_item_coord = self.item_coord_dic[a_item].read_state_and_advance_y(width)
-        b_item_coord = self.item_coord_dic[b_item].read_state_and_advance_y(width)
+        a_item_coord = self.item_coord_dic[a_item].read_state_and_advance_y(
+            width)
+        b_item_coord = self.item_coord_dic[b_item].read_state_and_advance_y(
+            width)
         y_range = (a_item_coord[1], b_item_coord[1],)
         return self.get_vein_polygon_xy(y_range, width)
 
@@ -139,9 +138,9 @@ class AlluvialTool:
     def get_rectangle_xy(self, item_coord, width, sign):
         x, y = item_coord
         rect = [[
-                    x + sign * 0.5 * (0.5 + xa) * self.h_gap,
-                    y + ya * width,
-                ] for xa, ya in self.combs]
+            x + sign * 0.5 * (0.5 + xa) * self.h_gap,
+            y + ya * width,
+        ] for xa, ya in self.combs]
         return np.array(rect)
 
     def generate_alluvial_fan(self, ):
@@ -150,7 +149,8 @@ class AlluvialTool:
             b_items4a_item = self.data_dic[a_item].keys()
             for b_item in self.b_members:
                 if b_item in b_items4a_item:
-                    l_a_rect, l_b_rect = self.get_label_rectangles_xy(a_item, b_item)
+                    l_a_rect, l_b_rect = self.get_label_rectangles_xy(
+                        a_item, b_item)
                     alluvial_fan += [
                         [self.generate_alluvial_vein(a_item, b_item), l_a_rect, l_b_rect, a_item, b_item, ]]
         return np.array(alluvial_fan)
@@ -162,7 +162,7 @@ class AlluvialTool:
             patches = [
                 Polygon(item, facecolor=colors[ind], alpha=alpha,
                         ) for ind, item in enumerate(self.alluvial_fan[:, num])
-                ]
+            ]
             for patch in patches:
                 ax.add_patch(patch)
         self.auto_label_veins(**kwargs)
@@ -176,7 +176,8 @@ class AlluvialTool:
         lci = len(color_items)
         if rand_seed is not None:
             np.random.seed(rand_seed)
-        cmap = cmap if cmap is not None else matplotlib.cm.get_cmap('hsv', lci * 10 ** 3)
+        cmap = cmap if cmap is not None else matplotlib.cm.get_cmap(
+            'hsv', lci * 10 ** 3)
         color_array = colors if colors is not None else [
             cmap(item) for ind, item in enumerate(np.random.rand(lci))]
         ind_dic = {item: ind for ind, item in enumerate(color_items)}
@@ -188,7 +189,8 @@ class AlluvialTool:
 
     def get_vein_label_lengths(self):
         item_text_len = max([len(it) for it in self.item_widths_dic])
-        width_text_len = max([len(str(w)) for w in self.item_widths_dic.values()])
+        width_text_len = max([len(str(w))
+                              for w in self.item_widths_dic.values()])
         return item_text_len, width_text_len
 
     def auto_label_veins(self, fontname='Arial', **kwargs):
@@ -212,7 +214,8 @@ class AlluvialTool:
             itl, wtl = self.item_text_len, self.width_text_len
             for side, sign in enumerate((-1, 1)):
                 plt.text(
-                    self.x_range[side]+sign*(label_shift+itl+int(disp_width)*(len(wdisp_sep)+wtl))*self.h_gap_frac,
+                    self.x_range[side]+sign*(label_shift+itl+int(disp_width)
+                                             * (len(wdisp_sep)+wtl))*self.h_gap_frac,
                     y,
                     labels[side],
                     # bidi.algorithm.get_display(labels[side]),  # RTL languages
@@ -237,45 +240,3 @@ class AlluvialTool:
             pat = '{:%s%d}%s{:%s%d}' % (lc, wl, wdisp_sep, rc, wr,)
             ans = pat.format(tl, tr, )
         return ans
-
-
-class ItemCoordRecord:
-    def __init__(self, ):
-        self.width = 0
-        self.xy = ()
-        self.curr_xy = self.xy[:]
-        self.side = -1
-
-    def set_start_state(self, width, xy, side):
-        self.width = width
-        self.xy = xy
-        self.curr_xy = list(self.xy[:])
-        self.side = side
-
-    def read_state_and_advance_y(self, width):
-        out = self.curr_xy[:]
-        self.curr_xy[1] += width
-        return out
-
-    def read_state_and_advance_x(self, width):
-        out = self.curr_xy[:]
-        self.curr_xy[0] += width
-        return out
-
-    def read_state(self):
-        return self.curr_xy[:]
-
-    def get_xy(self, ):
-        return self.xy
-
-    def get_x(self, ):
-        return self.xy[0]
-
-    def get_y(self, ):
-        return self.xy[1]
-
-    def get_width(self, ):
-        return self.width
-
-    def get_side_sign(self, ):
-        return 1 if self.side else -1
