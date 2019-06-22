@@ -6,7 +6,7 @@ Script (a convertir en módulo) para generar diagramas del tipo ["alluvial"](htt
 
 ## Usando el código
 
-Para usar el código, copia `alluvial.py` en tu directorio de trabajo y sigue la sintaxis de los siguientes ejemplos. Ve la sección [Uso Avanzado](#uso-avanzado) para ver la documentación de los parámetros disponibles.
+Para usar el código, import `alluvial` en tu código y sigue la sintaxis de los siguientes ejemplos. Ve la sección [Uso Avanzado](#uso-avanzado) para ver la documentación de los parámetros disponibles.
 
 ### Prerequisitos
 
@@ -19,6 +19,8 @@ Copia `alluvial.py` en tu directorio de trabajo.
 
 ## Ejemplos
 
+Tanto el código de los ejemplos como el gráfico resultante de cada uno, se encuentran disponibles en la carpeta `examples`
+
 ### Ejemplo 1
 
 ```python
@@ -26,17 +28,19 @@ import alluvial
 import matplotlib.pyplot as plt
 import numpy as np
 
-input_data = {'a': {'aa': 0.3, 'cc': 0.7,},
-              'b': {'aa': 2, 'bb': 0.5,},
-              'c': {'aa': 0.5, 'bb': 0.5, 'cc': 1.5,}}
+
+input_data = {'a': {'aa': 0.3, 'cc': 0.7, },
+              'b': {'aa': 2, 'bb': 0.5, },
+              'c': {'aa': 0.5, 'bb': 0.5, 'cc': 1.5, }}
 
 ax = alluvial.plot(input_data)
 fig = ax.get_figure()
-fig.set_size_inches(5,5)
+fig.set_size_inches(5, 5)
 plt.show()
+
 ```
 
-![Ejemplo 1](/image_examples/Example1.png)
+![Ejemplo 1](/examples/Example1.png)
 
 ### Ejemplo 2
 
@@ -47,23 +51,31 @@ import matplotlib.cm
 import numpy as np
 
 # Generating the input_data:
-seed=7
-np.random.seed(seed)
-def rand_letter(num): return chr(ord('A')+int(num*np.random.rand()))
+SEED = 7
+np.random.seed(SEED)
 
-input_data = [[rand_letter(15), rand_letter(5)*2] for _ in range(50)]
+
+def rand_letter(num):
+    return chr(ord('A')+int(num*np.random.rand()))
+
+
+input_data = [
+    [rand_letter(15), rand_letter(5)*2]
+    for _ in range(50)
+]
 
 # Plotting:
 cmap = matplotlib.cm.get_cmap('jet')
 ax = alluvial.plot(
-    input_data,  alpha=0.4, color_side=1, rand_seed=seed, figsize=(7,5),
+    input_data,  alpha=0.4, color_side=1, rand_seed=SEED, figsize=(7, 5),
     disp_width=True, wdisp_sep=' '*2, cmap=cmap, fontname='Monospace',
     labels=('Capitals', 'Double Capitals'), label_shift=2)
 ax.set_title('Utility display', fontsize=14, fontname='Monospace')
 plt.show()
+
 ```
 
-![Ejemplo 2](/image_examples/Example2.png)
+![Ejemplo 2](/examples/Example2.png)
 
 ## Uso Avanzado
 
