@@ -21,7 +21,7 @@ Copia `alluvial.py` en tu directorio de trabajo.
 
 Tanto el código de los ejemplos como el gráfico resultante de cada uno, se encuentran disponibles en la carpeta `examples`
 
-### Ejemplo 1
+### Ejemplo 1 - Uso básico
 
 ```python
 import alluvial
@@ -40,9 +40,9 @@ plt.show()
 
 ```
 
-![Ejemplo 1](/examples/Example1.png)
+![Ejemplo 1](/examples/1 - Simple/Example1.png)
 
-### Ejemplo 2
+### Ejemplo 2 - Personalizado
 
 ```python
 import alluvial
@@ -75,7 +75,7 @@ plt.show()
 
 ```
 
-![Ejemplo 2](/examples/Example2.png)
+![Ejemplo 2](/examples/2 - Custom/Example2.png)
 
 ## Uso Avanzado
 
