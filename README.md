@@ -77,6 +77,10 @@ plt.show()
 
 ![Ejemplo 2](/examples/2 - Custom/Example2.png)
 
+#### Más ejemplos
+
+* Ejemplo 3 - Cargar desde csv
+
 ## Uso Avanzado
 
 Formato de input adicional: Una lista de tuplas con la siguiente estructura:
