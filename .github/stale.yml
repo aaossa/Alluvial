@@ -21,7 +21,7 @@ staleLabel: inactiva
 markComment: false
 
 # Limitar el numero de acciones por hora (en el rango 1-30)
-limitPerRun: 1
+limitPerRun: 3
 
 # Limitar acciones solo a issues
 only: issues
